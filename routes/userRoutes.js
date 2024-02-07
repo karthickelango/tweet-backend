@@ -1,6 +1,5 @@
 import express from "express"
 import { User } from "../models/userSchema.js"
-import bcrypt from "bcrypt"
 import jwt from "jsonwebtoken";
 
 const router = express.Router()
@@ -44,11 +43,11 @@ router.post('/register', async (req, res) => {
             return res.status(400).send({ message: 'sent all fields' })
         }
         const { email, username, password } = req.body
-        const hashedPassword = await bcrypt.hash(password, 10)
+        // const hashedPassword = await bcrypt.hash(password, 10)
         const newUser = {
             email,
             username,
-            password: hashedPassword
+            password: password
         }
         const user = await User.create(newUser)
         return res.status(201).send(user)
@@ -90,7 +89,11 @@ router.post('/login', async (req, res) => {
         if (!user) {
             return res.status(401).json({ error: 'Invalid user name' })
         }
-        const isPassword = await bcrypt.compare(password, user.password)
+        // const isPassword = await bcrypt.compare(password, user.password)
+        // if (!isPassword) {
+        //     return res.status(401).json({ error: 'Invalid user password' })
+        // }
+        const isPassword = await User.findOne({password})
         if (!isPassword) {
             return res.status(401).json({ error: 'Invalid user password' })
         }

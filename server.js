@@ -1,8 +1,5 @@
 import express from "express";
 import mongoose from "mongoose";
-import bodyParser from "body-parser";
-import bcrypt from "bcrypt"
-import jwt from "jsonwebtoken";
 import { PORT, dbURL } from "./config.js";
 import userRoures from "./routes/userRoutes.js"
 import bookRoutes from "./routes/bookRoutes.js"
