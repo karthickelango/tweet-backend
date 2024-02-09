@@ -65,6 +65,14 @@ router.get('/users', async (req, res) => {
                     from: "follows",
                     localField: "_id",
                     foreignField: "followerId",
+                    as: "followeingList"
+                }
+            },
+            {
+                $lookup: {
+                    from: "follows",
+                    localField: "_id",
+                    foreignField: "followeeId",
                     as: "followerList"
                 }
             }
@@ -87,7 +95,7 @@ router.post('/login', async (req, res) => {
         if (!user) {
             return res.status(401).json({ error: 'Invalid user name' })
         }
-        const isPassword = await User.findOne({password})
+        const isPassword = await User.findOne({ password })
         if (!isPassword) {
             return res.status(401).json({ error: 'Invalid user password' })
         }

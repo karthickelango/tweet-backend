@@ -2,7 +2,7 @@ import express from "express";
 import mongoose from "mongoose";
 import { PORT, dbURL } from "./config.js";
 import userRoures from "./routes/userRoutes.js"
-import bookRoutes from "./routes/bookRoutes.js"
+import tweetRoutes from "./routes/tweetRoutes.js"
 import followRoute from "./routes/followRoutes.js";
 import cors from "cors";
 // connect to express app
@@ -16,7 +16,7 @@ app.get('/',  (req, res) => {
 })
 // Router 
 app.use('/', followRoute)
-app.use('/tweets', bookRoutes)
+app.use('/tweets', tweetRoutes)
 app.use('/', userRoures)
 //connect to MongoBD
 mongoose.connect(dbURL).then(() => {
