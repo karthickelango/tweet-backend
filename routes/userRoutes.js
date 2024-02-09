@@ -14,7 +14,7 @@ router.get('/mytweet', async (req, res) => {
                     from: "blogs",
                     localField: "_id",
                     foreignField: "user_id",
-                    as: "mybooks"
+                    as: "myTweet"
                 },
             },
             {
@@ -43,7 +43,6 @@ router.post('/register', async (req, res) => {
             return res.status(400).send({ message: 'sent all fields' })
         }
         const { email, username, password } = req.body
-        // const hashedPassword = await bcrypt.hash(password, 10)
         const newUser = {
             email,
             username,
@@ -60,7 +59,6 @@ router.post('/register', async (req, res) => {
 // get user GET method
 router.get('/users', async (req, res) => {
     try {
-        // const users = await User.find({})
         const users = await User.aggregate([
             {
                 $lookup: {
@@ -89,10 +87,6 @@ router.post('/login', async (req, res) => {
         if (!user) {
             return res.status(401).json({ error: 'Invalid user name' })
         }
-        // const isPassword = await bcrypt.compare(password, user.password)
-        // if (!isPassword) {
-        //     return res.status(401).json({ error: 'Invalid user password' })
-        // }
         const isPassword = await User.findOne({password})
         if (!isPassword) {
             return res.status(401).json({ error: 'Invalid user password' })
