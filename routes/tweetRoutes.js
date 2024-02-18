@@ -50,7 +50,7 @@ router.get('/:id', async (req, res) => {
 // update
 router.put('/:id', async (req, res) => {
     try {
-        if (!req.body.userName || !req.body.tweet || !req.body.userInfo) {
+        if (!req.body.tweet) {
             return res.status(400).send({ message: 'sent all fields' })
         }
         const { id } = req.params
