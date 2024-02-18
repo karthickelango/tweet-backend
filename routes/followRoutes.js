@@ -2,6 +2,7 @@ import express from "express"
 import { Follow } from "../models/followSchema.js"
 
 const router = express.Router()
+
 router.get('/follower', async (req, res) => {
   try {
     const follow = await Follow.find({})
@@ -26,5 +27,21 @@ router.post('/follow/:followerId/:followeeId', async (req, res) => {
     res.status(400).json({ success: false, message: 'Already following.' });
   }
 });
+
+// delete 
+
+router.delete('/follow/:id', async (req, res) => {
+  try {
+      const { id } = req.params
+      const result = await Follow.findByIdAndDelete(id)
+      if (!result) {
+          return res.status(404).send({ message: "Not found" })
+      }
+      return res.status(201).send({ message: "Deleted" })
+  } catch (error) {
+      console.log(error.message)
+      res.status(500).send({ message: error.message })
+  }
+})
 
 export default router
