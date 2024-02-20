@@ -21,7 +21,7 @@ router.get('/mytweet', async (req, res) => {
         const books = await User.aggregate([
             {
                 $lookup: {
-                    from: "blogs",
+                    from: "tweets",
                     localField: "_id",
                     foreignField: "user_id",
                     as: "myTweet"
