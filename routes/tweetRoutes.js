@@ -1,9 +1,21 @@
 import express from "express"
 import { Book } from "../models/tweetSchema.js"
 const router = express.Router()
+import multer from "multer";
+
+
+const storage = multer.diskStorage({
+    destination: function (req, file, cb) {
+        return cb(null, './postImages')
+    },
+    filename: function (req, file, cb) {
+        return cb(null, `${Date.now()}_${file.originalname}`)
+    }
+})
+const upload = multer({ storage })
 
 // post
-router.post('/', async (req, res) => {
+router.post('/', upload.single('file'), async (req, res) => {
     try {
         if (!req.body.userName || !req.body.tweet || !req.body.user_id) {
             return res.status(400).send({ message: 'sent all fields' })
@@ -12,6 +24,7 @@ router.post('/', async (req, res) => {
             userName: req.body.userName,
             tweet: req.body.tweet,
             user_id: req.body.user_id,
+            postImage: req.file.filename
         }
         const book = await Book.create(newBook)
         return res.status(201).send(book)

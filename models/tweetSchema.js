@@ -14,6 +14,9 @@ const tweetSchema = mongoose.Schema(
         type: mongoose.Schema.ObjectId,
         required: true
     },
+    postImage: {
+        type : String
+    }
 },
 {
     timestamps: true,

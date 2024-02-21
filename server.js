@@ -11,6 +11,7 @@ const app = express()
 app.use(express.json())
 app.use(cors())
 app.use(express.static('images'))
+app.use(express.static('postImages'))
 
 app.get('/',  (req, res) => {
     return res.status(234).send('user auth')
