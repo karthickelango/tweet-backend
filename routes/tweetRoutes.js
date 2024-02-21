@@ -21,7 +21,7 @@ router.post('/', async (req, res) => {
     }
 })
 
-// get books
+// get post
 router.get('/', async (req, res) => {
     try {
         const books = await Book.find({}).sort({ createdAt : -1 })
@@ -35,7 +35,32 @@ router.get('/', async (req, res) => {
     }
 })
 
-// get books by id
+// get post
+router.get('/avatar', async (req, res) => {
+    try {
+        const books = await Book.aggregate(
+            [
+                {
+                    $lookup: {
+                        from: "user-auths",
+                        localField: "user_id",
+                        foreignField: "_id",
+                        as: "user"
+                    }
+                }
+            ]
+        )
+        return res.status(200).json({
+            count: books.length,
+            data: books
+        })
+    }
+    catch (error) {
+        console.log(error)
+    }
+})
+
+// get post by id
 router.get('/:id', async (req, res) => {
     try {
         const { id } = req.params
@@ -47,7 +72,7 @@ router.get('/:id', async (req, res) => {
     }
 })
 
-// update
+// update post
 router.put('/:id', async (req, res) => {
     try {
         if (!req.body.tweet) {
@@ -65,7 +90,7 @@ router.put('/:id', async (req, res) => {
     }
 })
 
-// delete 
+// delete post
 
 router.delete('/:id', async (req, res) => {
     try {

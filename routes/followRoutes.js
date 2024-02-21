@@ -2,7 +2,7 @@ import express from "express"
 import { Follow } from "../models/followSchema.js"
 
 const router = express.Router()
-
+// get follower 
 router.get('/follower', async (req, res) => {
   try {
     const follow = await Follow.find({})
@@ -16,6 +16,7 @@ router.get('/follower', async (req, res) => {
   }
 })
 
+// add follower
 router.post('/follow/:followerId/:followeeId', async (req, res) => {
   const { followerId, followeeId } = req.params;
   const existingFollow = await Follow.findOne({ followerId, followeeId });
@@ -28,7 +29,7 @@ router.post('/follow/:followerId/:followeeId', async (req, res) => {
   }
 });
 
-// delete 
+// delete follower
 
 router.delete('/follow/:id', async (req, res) => {
   try {
