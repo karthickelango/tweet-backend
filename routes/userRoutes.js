@@ -185,11 +185,12 @@ router.put('/reset-password/:id', async (req, res) => {
         const { password } = req.body
         console.log(password)
         const user = await User.findByIdAndUpdate(id, { password: password })
-        return res.status(201).send(user)
+        return res.status(201).json(user)
     } catch (error) {
         res.status(500).json({ status: 'Something went wrong' })
     }
 });
+
 // get user by id
 router.get('/:id', async (req, res) => {
     try {
