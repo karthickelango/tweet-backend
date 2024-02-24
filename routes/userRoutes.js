@@ -2,6 +2,9 @@ import express from "express"
 import { User } from "../models/userSchema.js"
 import jwt from "jsonwebtoken";
 import multer from "multer";
+import bcrypt from "bcryptjs";
+import nodemailer from 'nodemailer';
+import crypto from 'crypto'
 
 const router = express.Router()
 const SECRET_KEY = 'key'
@@ -117,7 +120,76 @@ router.post('/login', async (req, res) => {
         res.status(500).json({ error: 'Error login' })
     }
 })
+// forget password send email
 
+router.post('/forgot-password', async (req, res) => {
+    const { email } = req.body;
+    try {
+        const user = await User.findOne({ email });
+        if (!user) {
+            return res.status(401).json({ error: 'User not found' });
+        }
+        const secret = SECRET_KEY + user.password
+        const resetToken = jwt.sign({ email: user.email, id: user._id }, secret, { expiresIn: '5m' })
+        const link = `http://localhost:3000/reset-password/${user._id}/${resetToken}`
+        const transporter = nodemailer.createTransport({
+            service: 'Gmail',
+            auth: {
+                user: 'karthik5ive@gmail.com',
+                pass: 'lyxprkjsrpithgkp',
+            },
+        });
+
+        const mailOptions = {
+            from: 'karthik5ive@gmail.com',
+            to: email,
+            subject: 'Password Reset',
+            text: `You are receiving this because you (or someone else) have requested the reset of the password for your account.\n\n`
+                + `Please click on the following link, or paste this into your browser to complete the process:\n\n`
+                + `http://localhost:3000/reset-password/${user._id}/${resetToken}\n\n`
+                + `If you did not request this, please ignore this email and your password will remain unchanged.\n`,
+        };
+
+
+        await transporter.sendMail(mailOptions);
+        console.log('Email sent successfully');
+        res.status(200).json({ message: 'Email sent with password reset instructions' });
+        return res.status(200).json({
+            const: User
+        })
+    } catch (error) {
+        console.log(error)
+    }
+});
+
+// forget password
+router.get('/reset-password/:id/:token', async (req, res) => {
+    const { id, token } = req.params;
+    const user = await User.findOne({ _id: id });
+    if (!user) {
+        return res.status(401).json({ error: 'User not found' });
+    }
+    const secret = SECRET_KEY + user.password
+    try {
+        const verify = jwt.verify(token, secret)
+        res.send('Verified')
+    } catch (error) {
+        res.send('Not Verified')
+    }
+});
+
+// reset password
+router.put('/reset-password/:id', async (req, res) => {
+    try {
+        const { id } = req.params;
+        const { password } = req.body
+        console.log(password)
+        const user = await User.findByIdAndUpdate(id, { password: password })
+        return res.status(201).send(user)
+    } catch (error) {
+        res.status(500).json({ status: 'Something went wrong' })
+    }
+});
 // get user by id
 router.get('/:id', async (req, res) => {
     try {
@@ -139,7 +211,7 @@ router.put('/upload/:id', upload.single('file'), async (req, res) => {
     }
     catch (error) {
         console.log(error)
-    } 
+    }
 })
 
 export default router

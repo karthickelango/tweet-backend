@@ -37,7 +37,7 @@ router.post('/', upload.single('file'), async (req, res) => {
 // get post
 router.get('/', async (req, res) => {
     try {
-        const books = await Book.find({}).sort({ createdAt : -1 })
+        const books = await Book.find({}).sort({ createdAt: -1 })
         return res.status(200).json({
             count: books.length,
             data: books
