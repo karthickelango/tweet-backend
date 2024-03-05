@@ -131,7 +131,7 @@ router.post('/forgot-password', async (req, res) => {
         }
         const secret = SECRET_KEY + user.password
         const resetToken = jwt.sign({ email: user.email, id: user._id }, secret, { expiresIn: '5m' })
-        const link = `http://localhost:3000/reset-password/${user._id}/${resetToken}`
+        const link = `https://tweetxapp.netlify.app/reset-password/${user._id}/${resetToken}`
         const transporter = nodemailer.createTransport({
             service: 'Gmail',
             auth: {
